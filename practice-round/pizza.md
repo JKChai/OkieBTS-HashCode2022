@@ -86,12 +86,14 @@ The picture below shows the preferences of 3 potential clients.
 <details third>
 <summary>Third Client</summary>
 <br>
+<ul>
 <li> [ ] cheese </li>
 <li> [No] basil </li>
 <li> [Yes] mushroom </li>
 <li> [ ] bell peppers </li>
 <li> [Yes] tomatoes </li>
 <li> [ ] pineapple </li>
+</ul>
 </details>
 
 In this particular Sample Output, we choose to use 4 ingredients in the pizza: cheese, mushrooms, tomatoes, and peppers.
