@@ -62,35 +62,37 @@ The picture below shows the preferences of 3 potential clients.
 <details first>
 <summary>First Client</summary>
 <br>
-- [Yes] cheese
-- [ ] basil
-- [ ] mushroom
-- [Yes] bell peppers
-- [ ] tomatoes
-- [ ] pineapple
-<details>
+<li> [Yes] cheese </li>
+<li> [ ] basil </li>
+<li> [ ] mushroom </li>
+<li> [Yes] bell peppers </li>
+<li> [ ] tomatoes </li>
+<li> [ ] pineapple </li>
+</details>
 
 <details second>
 <summary>Second Client</summary>
 <br>
-- [ ] cheese
-- [Yes] basil
-- [ ] mushroom
-- [ ] bell peppers
-- [ ] tomatoes
-- [No] pineapple
-<details>
+<ul>
+<li> [ ] cheese </li>
+<li> [Yes] basil </li>
+<li> [ ] mushroom </li>
+<li> [ ] bell peppers </li>
+<li> [ ] tomatoes </li>
+<li> [No] pineapple </li>
+</ul>
+</details>
 
 <details third>
 <summary>Third Client</summary>
 <br>
-- [ ] cheese
-- [No] basil
-- [Yes] mushroom
-- [ ] bell peppers
-- [Yes] tomatoes
-- [ ] pineapple
-<details>
+<li> [ ] cheese </li>
+<li> [No] basil </li>
+<li> [Yes] mushroom </li>
+<li> [ ] bell peppers </li>
+<li> [Yes] tomatoes </li>
+<li> [ ] pineapple </li>
+</details>
 
 In this particular Sample Output, we choose to use 4 ingredients in the pizza: cheese, mushrooms, tomatoes, and peppers.
 
