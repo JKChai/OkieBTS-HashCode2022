@@ -1,3 +1,7 @@
+● F + (D – T) points if T ≤ D
+F =  defualt
+T = time the car took
+
 1. make reading of first line: durationOfSim, numberOfintersections, numberOfStreets numberOfCars, bonusPoint
 
 2. make line readings of numberOfStreets: startOfstreet and endOfstreet, nameOfStreet, timeToEndStreet
@@ -13,7 +17,7 @@
 
 
 
-xxx Find minimumpath(dijktra algo) for each car
+
 
 Find sumOfTimeConsumtion  for each car
 
@@ -23,18 +27,26 @@ open green light for them
 
 
 
+=========Simulation==============
+Goal: to get green light time for the street in each intersection
 
-T = 0 all red light for each intersection
-T = 1 one of incoming streets green light(take timeToEndStreet-1 for car) for each intersection
-T = 2 another of incoming streets green light and the others are red  for each intersection
+D = 0 all red light for each intersection
+D = 1 one of incoming streets green light(take timeToEndStreet-1 for car) for each intersection
+D = 2 another of incoming streets green light and the others are red  for each intersection
 .
 .
 .
-for T loop:
+for D loop:
     for each intersection:
-        if T = 0:
+        if D = 0:
             all red
         else:
             if car in rank:
                 give green light
             
+
+
+
+
+Do Not:
+    Find minimumpath(dijktra algo) for each car
