@@ -1,6 +1,6 @@
-● F + (D – T) points if T ≤ D
-F =  defualt
-T = time the car took
+- F + (D – T) points if T ≤ D
+- F =  defualt
+- T = time the car took
 
 1. make reading of first line: durationOfSim, numberOfintersections, numberOfStreets numberOfCars, bonusPoint
 
@@ -8,14 +8,14 @@ T = time the car took
 
 3. make line readings of numberOfCars: numberOfStreetCarWant, nameOfStreet ...
 
-4. hash table ==> car1 as key, list of street as value
+    1. Dictionary ==> car1 as key, list of street as value
 
-5. hash table ==> nameOfStreet as key, tuple of startOfstreet, endOfstreet, timeToEndStreet
+    2. Dictionary ==> nameOfStreet as key, tuple of startOfstreet, endOfstreet, timeToEndStreet
 
-6. hash table ==> startOfstreet as key,  list of endOfstreet as value
+    3. Dictionary ==> startOfstreet as key,  list of endOfstreet as value
 
 
-
+4. Dictionary ==> car 
 
 
 
@@ -45,6 +45,11 @@ for D loop:
                 give green light
             
 
+
+
+first car takes  1 + 3 +2 = 6
+
+second car takes 3 + 1 = 4
 
 
 
