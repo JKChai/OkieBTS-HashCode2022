@@ -13,7 +13,8 @@ class StreetInfo:
         self.startIntersectionOfStreet = None
         self.endIntersectionOfStreet = None
         self.timeToEndStreet = None
-        self.queue = []
+        self.listOfWaitingCars = []
+        self.listOfMovingCars = []
         
 class CarInfo:
     def __init__(self):
@@ -21,9 +22,9 @@ class CarInfo:
         self.currentStreet = None
         self.totalTimeLeft = None
         self.currentTimeLeft = 0
-        self.carFacingIntersection = None
+        self.carStartingIntersection = None
         self.isWaiting = None
-
+        self.isMoving = None
         self.listOfStreetsToPass = []
     
 
@@ -35,8 +36,8 @@ class IntersectionInfo:
 
 def trafficSim():
     debug1 = False
-    debug2 = False
-    debug3 = False
+    debug2 = True
+    
     durationOfSim               = None
     numberOfIntersections       = None
     numberOfStreets             = None
@@ -82,9 +83,22 @@ def trafficSim():
         si_obj.timeToEndStreet = timeToEndStreet
         si_obj.endIntersectionOfStreet = endIntersectionOfStreet
         si_obj.startIntersectionOfStreet  = startIntersectionOfStreet
+
         streetDict[streetName] = si_obj
+        
+
         intersectionDirect[startIntersectionOfStreet].append(endIntersectionOfStreet)
- 
+        
+        
+        # streetDict[streetName] = (listOfMovingCars,
+        #                                     startIntersectionOfStreet,
+        #                                     endIntersectionOfStreet,
+        #                                       timeToEndStreet)
+        # streetDict[streetName].listOfMovingCars = []
+        # streetDict[streetName].startIntersectionOfStreet = startIntersectionOfStreet
+        # streetDict[streetName].endIntersectionOfStreet = endIntersectionOfStreet
+        # streetDict[streetName].timeToEndStreet = timeToEndStreet
+        # streetDict[streetName].listOfWaitingCars = []
         if debug1:
             print(f"""
                 Street {streetName} starts at intersection {startIntersectionOfStreet},
@@ -103,7 +117,7 @@ def trafficSim():
         
         
         
-        carFacingIntersection = streetDict[firstStreet].endIntersectionOfStreet
+        carStartingIntersection = streetDict[firstStreet].endIntersectionOfStreet
         
         totalTimeLeft = 0
         for streetName in listOfStreetsToPass:
@@ -114,14 +128,21 @@ def trafficSim():
         car_obj.carNumber
         car_obj.currentStreet = firstStreet
         car_obj.totalTimeLeft = totalTimeLeft
-        car_obj.carFacingIntersection = carFacingIntersection
+        car_obj.carStartingIntersection = carStartingIntersection
         car_obj.listOfStreetsToPass = listOfStreetsToPass
         car_obj.isWaiting = True
+        
         carDict[carNumber] = car_obj
-        streetDict[firstStreet].queue.append(carNumber)
+        streetDict[firstStreet].listOfWaitingCars.append(carNumber)
+        
+        # carDict[carNumber].currentStreet = firstStreet
+        # carDict[carNumber].totalTimeLeft = totalTimeLeft
+        # carDict[carNumber].currentTimeLeft = 0
+        # carDict[carNumber].carStartingIntersection = carStartingIntersection
+        # carDict[carNumber].listOfStreetsToPass = listOfStreetsToPass
         # streetDict[firstStreet].listOfWaitingCars.append(carNumber)
         
-
+        
         if debug1:
             print(f"""
                 The first car starts at the end of
@@ -135,84 +156,66 @@ def trafficSim():
     
     movingCars = []
     
-    for D in range(0, int(durationOfSim)):
-        
-        
+    for D in range(0, int(durationOfSim)+1):
         if debug2:
+            
             print(f"=========Start D:{D}===============")
             print(f"=============================")
         
-        # iter car and find front line car
+        carsCrossed = set()
         frontLineCars = []
-        
-        
         for c in carList:
-            # front car
-            if debug2:
-                print(streetDict[carDict[c].currentStreet].queue[0])
-                
-            if c == streetDict[carDict[c].currentStreet].queue[0]:
-                
-                
-                if not carDict[c].listOfStreetsToPass:
-                    
-                    if debug3:
-                         print(f"HERE")
-                         
-                    carList.remove(c)
-                    exitcars.append((c, D))
-                    
-                elif carDict[c].isWaiting:
+            # check if car is at front line
+            if streetDict[carDict[c].currentStreet].listOfWaitingCars:
+                if c == streetDict[carDict[c].currentStreet].listOfWaitingCars[0]:
                     frontLineCars.append(c)
-
-        # iter front car and collect cars in intersection sort cars
-        intersectionDict = defaultdict(list)
+        
+        inter_car  = defaultdict(list)
         for c in frontLineCars:
-            intersectionDict[carDict[c].carFacingIntersection].append((c, carDict[c].totalTimeLeft))
+            inter_car[carDict[c].carStartingIntersection].append((c, carDict[c].totalTimeLeft))
         
-        # sort cars in each intersection to find smallest total time
-        # give greenlight to smallest total time car
-        carCrossed = set()
-        for inter in intersectionDict.keys():
-            intersectionDict[inter].sort(key = lambda x: x[1])
-            smallestCar = intersectionDict[inter][0][0]
-            # append greenlight dict
-            greenlightInfo[inter].append((carDict[smallestCar].currentStreet, D))
-            carCrossed.add(smallestCar)
+        carsCross = set()
+        for intersection, cars in list(inter_car.items()):
+            # print("intersection, cars")
+            # print(f"{intersection, cars}")
+            cars.sort(key= lambda x: x[1])
+            greenlightInfo[intersection].append((carDict[cars[0][0]].currentStreet, D))
+            carsCross.add(cars[0][0])
+            movingCars.append(cars[0][0])
         
-  
-        # update cars
-
-        #For cars crossed,
-        for c in carCrossed:
-            #  update waiting status
-            carDict[c].isWaiting = False
-            # deqeue car in street
-            streetDict[carDict[c].currentStreet].queue.pop(0)
-            # change car street to pass
-            carDict[c].currentStreet = carDict[c].listOfStreetsToPass.pop(0)
-            
-            # change intersection to face
-            
-            carDict[c].carFacingIntersection = streetDict[carDict[c].currentStreet].endIntersectionOfStreet
-            
-            streetDict[carDict[c].currentStreet].queue.append(c)
-
-            carDict[c].currentTimeLeft = streetDict[carDict[c].currentStreet].timeToEndStreet
-            
-            movingCars.append(c)
         
-        # for moving car
+        print("Car Cross")
+        print(carsCross)
+        print("movingCars")
+        print(movingCars)
         for c in movingCars:
-            # if c not in carCrossed:
+            print(carDict[c].currentTimeLeft)
+        # update else cars
+        for c in movingCars:
+            if c not in carsCross:
+                carDict[c].currentTimeLeft = carDict[c].currentTimeLeft -1
+                carDict[c].totalTimeLeft = carDict[c].totalTimeLeft - 1
                 
-            carDict[c].currentTimeLeft = carDict[c].currentTimeLeft -1
-            if debug2:
-                        print(carDict[c].listOfStreetsToPass)
-                        print("Time left: ",carDict[c].currentTimeLeft)
-            if carDict[c].currentTimeLeft == 0:
-                carDict[c].isWaiting = True
-                movingCars.remove(c)
+                if carDict[c].totalTimeLeft <= 0:
+                    exitcars.append((c, D))
+                    carList.remove(c)
+                    movingCars.remove(c)
+                    
+                elif carDict[c].currentTimeLeft <= 0:
+                    streetDict[carDict[c].currentStreet].listOfWaitingCars.append(c)
+                    streetDict[carDict[c].currentStreet].listOfMovingCars.remove(c)
+                    movingCars.remove(c)
+        
+        # update carCross
+        for c in carsCross:
+            streetDict[carDict[c].currentStreet].listOfWaitingCars.pop(0)
+            carDict[c].currentStreet = carDict[c].listOfStreetsToPass.pop(0)
+            carDict[c].currentTimeLeft = streetDict[carDict[c].currentStreet].timeToEndStreet - 1
+            carDict[c].totalTimeLeft = carDict[c].totalTimeLeft - 1
+            carDict[c].carStartingIntersection =  streetDict[carDict[c].currentStreet].endIntersectionOfStreet
+            streetDict[carDict[c].currentStreet].listOfMovingCars.append(c)
+        
+        
         
         if debug2:
             print(f"=========END D:{D}===============")
@@ -221,30 +224,6 @@ def trafficSim():
             
     print("greenlightInfo[inter].append((streetToPass, D))")
     print(greenlightInfo.items())
-    file1 = open("output.csv", "w+")
-    outputIntersections = list(greenlightInfo.keys())
-    file1.write(str(len(outputIntersections)))
-    file1.write("\n")
-    for inter in outputIntersections:
-        file1.write(inter)
-        file1.write("\n")
-        numOfIncomingStreets = len(greenlightInfo[inter])
-        file1.write(str(numOfIncomingStreets))
-        file1.write("\n")
-        time = 0
-        currentStreet = None
-        for street, iter in greenlightInfo[inter]:
-
-    
-            file1.write(street)
-            file1.write(" ")
-            file1.write(str(iter - time))
-            file1.write("\n")
-            time = iter
-    file1.close()
-
-    
-    
     print(exitcars)
     return
     
